@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Image Application</string>
+    <string name="type">Тип файла</string>
+    <string name="username">Имя пользователя</string>
+    <string name="title">Заголовок</string>
+    <string name="import_datetime">Дата загрузки</string>
 </resources>
