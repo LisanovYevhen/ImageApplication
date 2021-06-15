@@ -1,2 +1,3 @@
 rootProject.name = "MyWork"
 include ':app'
+include ':imageapplication'
