@@ -56,6 +56,7 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
      protected void onPostExecute(String s) {
          Log.d(LOG_TAG,"№ потока= "+Thread.currentThread().getName());
          Log.d(LOG_TAG,"Длина строки Json, меньше должно быть 45к= "+String.valueOf(s.length()));
+       InternetSetting.valueJson(s);
 
      }
  }

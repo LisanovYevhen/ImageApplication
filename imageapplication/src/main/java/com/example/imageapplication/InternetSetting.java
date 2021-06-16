@@ -4,6 +4,10 @@ import android.net.Uri;
 import android.util.JsonReader;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -15,6 +19,7 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class InternetSetting {
     private final static String GIPHY_API_BASE_URL="https://api.giphy.com";
@@ -70,5 +75,30 @@ public class InternetSetting {
             Log.d(FirstActivity.LOG_TAG,"Отключено");
         }
         return null;
+    }
+
+    public static ArrayList<Information> valueJson(String responseString){
+        ArrayList<Information> informationArrayList = new ArrayList<>();
+        try {
+            JSONObject jsonObject=new JSONObject(responseString);
+            JSONArray jsonArray = jsonObject.getJSONArray("data");
+            Information information;
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObjectForArray = jsonArray.getJSONObject(i);
+                information= new Information();
+                information.setTitle(jsonObjectForArray.getString("title"));
+                information.setType(jsonObjectForArray.getString("type"));
+                information.setUsername(jsonObjectForArray.getString("username"));
+                information.setImport_datetime(jsonObjectForArray.getString("import_datetime"));
+                JSONObject jsonObjectImages =jsonObjectForArray.getJSONObject("images");
+                JSONObject jsonObjectFixed_Width_Small_Still=jsonObjectImages.getJSONObject("fixed_width_small_still");
+                String url=jsonObjectFixed_Width_Small_Still.getString("url");
+                information.setUrl(url);
+                informationArrayList.add(information);
+            }
+        } catch (JSONException e) {
+            Log.e(FirstActivity.LOG_TAG,"Cтрока ответа response не в формате json");
+        }
+        return informationArrayList;
     }
 }
