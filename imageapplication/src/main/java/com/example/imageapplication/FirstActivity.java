@@ -11,8 +11,10 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.net.URL;
+
 public class FirstActivity extends AppCompatActivity implements View.OnClickListener {
-    public final String LOG_TAG="FirstActivity";
+    public static final String LOG_TAG="FirstActivity";
     private Button buttonStart;
     private RecyclerView recyclerView;
     private HardRecyclerViewAdapter adapter;
@@ -23,11 +25,7 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_first);
         buttonStart=findViewById(R.id.button_start);
         buttonStart.setOnClickListener(this);
-       Log.d(LOG_TAG,InternetSetting.createURL().toString());
-
         initRecyclerView();
-
-
 
     }
     private void initRecyclerView(){
@@ -41,14 +39,26 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.button_start:
-                Log.d(LOG_TAG,"Кнопка");
+                new JsonAsyncTask().execute(InternetSetting.createURL());
                 break;
         }
     }
 
-   /* private class JsonAsyncTask extends AsyncTask<>{
+ private class JsonAsyncTask extends AsyncTask<URL,Void,String>{
 
-    }*/
+     @Override
+     protected String doInBackground(URL... urls) {
+         Log.d(LOG_TAG,"№ потока= "+Thread.currentThread().getName());
+         return InternetSetting.responseJson(urls[0]);
+     }
+
+     @Override
+     protected void onPostExecute(String s) {
+         Log.d(LOG_TAG,"№ потока= "+Thread.currentThread().getName());
+         Log.d(LOG_TAG,"Длина строки Json, меньше должно быть 45к= "+String.valueOf(s.length()));
+
+     }
+ }
 
 
 }
