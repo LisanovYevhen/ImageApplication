@@ -1,6 +1,7 @@
 package com.example.imageapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.AsyncTask;
@@ -11,7 +12,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import java.lang.reflect.Array;
 import java.net.URL;
+import java.util.ArrayList;
 
 public class FirstActivity extends AppCompatActivity implements View.OnClickListener {
     public static final String LOG_TAG="FirstActivity";
@@ -29,9 +32,8 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
 
     }
     private void initRecyclerView(){
-        recyclerView =  new RecyclerView(this);
-        adapter= new HardRecyclerViewAdapter();
-        recyclerView.setAdapter(adapter);
+        recyclerView =findViewById(R.id.recycler_view);
+        recyclerView.setLayoutManager( new LinearLayoutManager(this));
     }
 
 
@@ -44,19 +46,17 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
         }
     }
 
- private class JsonAsyncTask extends AsyncTask<URL,Void,String>{
+ private class JsonAsyncTask extends AsyncTask<URL,Void, ArrayList<Information>>{
 
      @Override
-     protected String doInBackground(URL... urls) {
-         Log.d(LOG_TAG,"№ потока= "+Thread.currentThread().getName());
-         return InternetSetting.responseJson(urls[0]);
+     protected ArrayList<Information> doInBackground(URL... urls) {
+         return InternetSetting.valueJson(InternetSetting.responseStringForJson(urls[0]));
      }
 
      @Override
-     protected void onPostExecute(String s) {
-         Log.d(LOG_TAG,"№ потока= "+Thread.currentThread().getName());
-         Log.d(LOG_TAG,"Длина строки Json, меньше должно быть 45к= "+String.valueOf(s.length()));
-       InternetSetting.valueJson(s);
+     protected void onPostExecute(ArrayList<Information> information ) {
+         adapter=new HardRecyclerViewAdapter(information,getApplicationContext());
+         recyclerView.setAdapter(adapter);
 
      }
  }

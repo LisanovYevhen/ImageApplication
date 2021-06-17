@@ -37,8 +37,8 @@ public class InternetSetting {
     public static URL createURL(/*String query,String limit,String offset,String rating,String language*/){
         Uri uri= Uri.parse(GIPHY_API_BASE_URL+GIPHY_METHOD).buildUpon()
                 .appendQueryParameter("api_key",GIPHY_API_KEY)
-                .appendQueryParameter(GIPHY_API_PARAMETER_QUERY,"china")
-                .appendQueryParameter(GIPHY_API_PARAMETER_LIMIT,"5")
+                .appendQueryParameter(GIPHY_API_PARAMETER_QUERY,"child")
+                .appendQueryParameter(GIPHY_API_PARAMETER_LIMIT,"8")
                 .appendQueryParameter(GIPHY_API_PARAMETER_OFFSET,"0")
                 .appendQueryParameter(GIPHY_API_PARAMETER_RATING,"g")
                 .appendQueryParameter(GIPHY_API_PARAMETER_LANG,"en")
@@ -52,7 +52,7 @@ public class InternetSetting {
         return url;
     };
 
-    public static String responseJson(URL url)  {
+    public static String responseStringForJson(URL url)  {
         HttpURLConnection httpURLConnection = null;
         try {
             httpURLConnection = (HttpURLConnection) url.openConnection();
@@ -86,7 +86,9 @@ public class InternetSetting {
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObjectForArray = jsonArray.getJSONObject(i);
                 information= new Information();
-                information.setTitle(jsonObjectForArray.getString("title"));
+                String s=jsonObjectForArray.getString("title");
+                String s1= s.split(" GIF")[0];
+                information.setTitle(s1);
                 information.setType(jsonObjectForArray.getString("type"));
                 information.setUsername(jsonObjectForArray.getString("username"));
                 information.setImport_datetime(jsonObjectForArray.getString("import_datetime"));

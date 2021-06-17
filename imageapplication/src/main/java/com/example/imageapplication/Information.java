@@ -1,5 +1,6 @@
 package com.example.imageapplication;
 public class Information  {
+
     private String  url;
     private String  type;
     private String  username;
@@ -24,6 +25,10 @@ public class Information  {
 
     public void setImport_datetime(String import_datetime) {
         this.import_datetime = import_datetime;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     public String getType() {

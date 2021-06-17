@@ -1,34 +1,45 @@
 package com.example.imageapplication;
 
+import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
 public  class HardRecyclerViewAdapter extends RecyclerView.Adapter<HardRecyclerViewAdapter.HardRecyclerViewHolder> {
-    private ArrayList<Information> informationArrayList = new ArrayList<>();
-
-    public void setInformation(Information information){
-        informationArrayList.add(information);
-        notifyDataSetChanged();
+    private ArrayList<Information> informationArrayList;
+    private Context context;
+    public HardRecyclerViewAdapter(ArrayList<Information> informationArrayList,Context context) {
+        this.informationArrayList = informationArrayList;
+        this.context=context;
     }
-
-
 
     @Override
     public HardRecyclerViewHolder onCreateViewHolder( ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item,parent,false);
-        return new HardRecyclerViewHolder(view);
+        HardRecyclerViewHolder hardRecyclerViewHolder = new HardRecyclerViewHolder(view);
+
+
+        return  hardRecyclerViewHolder;
     }
 
     @Override
     public void onBindViewHolder( HardRecyclerViewAdapter.HardRecyclerViewHolder holder, int position) {
+        Information information=informationArrayList.get(position);
+        holder.title.setText(information.getTitle());
+        holder.type.setText(information.getType());
+        holder.username.setText(information.getUsername());
+        holder.import_datetime.setText(information.getImport_datetime());
+        Picasso.with(context).load(information.getUrl()).resize(100,100).into(holder.imageView);
+        Log.d(FirstActivity.LOG_TAG,"адаптер"+information.getTitle());
 
     }
 
@@ -47,10 +58,11 @@ public  class HardRecyclerViewAdapter extends RecyclerView.Adapter<HardRecyclerV
         public HardRecyclerViewHolder( View itemView) {
             super(itemView);
             imageView=itemView.findViewById(R.id.image_view);
-            type=itemView.findViewById(R.id.image_view);
+            type=itemView.findViewById(R.id.text_view_type);
             username=itemView.findViewById(R.id.text_view_username);
             title=itemView.findViewById(R.id.text_view_title);
             import_datetime=itemView.findViewById(R.id.text_view_import_datetime);
         }
+
     }
 }
