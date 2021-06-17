@@ -34,14 +34,14 @@ public class InternetSetting {
 
 
 
-    public static URL createURL(/*String query,String limit,String offset,String rating,String language*/){
+    public static URL createURL(String query,String limit,String offset,String rating,String language){
         Uri uri= Uri.parse(GIPHY_API_BASE_URL+GIPHY_METHOD).buildUpon()
                 .appendQueryParameter("api_key",GIPHY_API_KEY)
-                .appendQueryParameter(GIPHY_API_PARAMETER_QUERY,"child")
-                .appendQueryParameter(GIPHY_API_PARAMETER_LIMIT,"8")
-                .appendQueryParameter(GIPHY_API_PARAMETER_OFFSET,"0")
-                .appendQueryParameter(GIPHY_API_PARAMETER_RATING,"g")
-                .appendQueryParameter(GIPHY_API_PARAMETER_LANG,"en")
+                .appendQueryParameter(GIPHY_API_PARAMETER_QUERY,query)
+                .appendQueryParameter(GIPHY_API_PARAMETER_LIMIT,limit)
+                .appendQueryParameter(GIPHY_API_PARAMETER_OFFSET,offset)
+                .appendQueryParameter(GIPHY_API_PARAMETER_RATING,rating)
+                .appendQueryParameter(GIPHY_API_PARAMETER_LANG,language)
                 .build();
         URL url=null;
         try {

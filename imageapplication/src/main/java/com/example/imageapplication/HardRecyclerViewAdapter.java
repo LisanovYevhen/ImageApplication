@@ -17,9 +17,20 @@ import java.util.ArrayList;
 public  class HardRecyclerViewAdapter extends RecyclerView.Adapter<HardRecyclerViewAdapter.HardRecyclerViewHolder> {
     private ArrayList<Information> informationArrayList;
     private Context context;
+
     public HardRecyclerViewAdapter(ArrayList<Information> informationArrayList,Context context) {
         this.informationArrayList = informationArrayList;
         this.context=context;
+    }
+
+    public HardRecyclerViewAdapter(Context context) {
+        informationArrayList= new ArrayList<>();
+        this.context = context;
+    }
+
+    public void setInformationArrayList(ArrayList<Information> informationArrayList) {
+        this.informationArrayList = informationArrayList;
+        notifyDataSetChanged();
     }
 
     @Override

@@ -3,24 +3,50 @@ package com.example.imageapplication;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ListView;
-import android.widget.Toast;
+import android.widget.EditText;
+import android.widget.SimpleAdapter;
+import android.widget.Spinner;
 
-import java.lang.reflect.Array;
 import java.net.URL;
 import java.util.ArrayList;
 
-public class FirstActivity extends AppCompatActivity implements View.OnClickListener {
+public class FirstActivity extends AppCompatActivity implements View.OnClickListener{
     public static final String LOG_TAG="FirstActivity";
     private Button buttonStart;
     private RecyclerView recyclerView;
     private HardRecyclerViewAdapter adapter;
+
+    private EditText editTextQuery;
+    private EditText editTextLimit;
+    private EditText editTextOffset;
+
+    private Spinner spinnerRating;
+    private String rating;
+    private ArrayAdapter<String> ratingAdapter;
+
+    private Spinner spinnerLanguage;
+    private String language;
+    private ArrayAdapter<String> languageAdapter;
+
+
+
+    @Override
+    protected void onSaveInstanceState( Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState( Bundle savedInstanceState) {
+
+        super.onRestoreInstanceState(savedInstanceState);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,25 +54,44 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_first);
         buttonStart=findViewById(R.id.button_start);
         buttonStart.setOnClickListener(this);
-        initRecyclerView();
 
-    }
-    private void initRecyclerView(){
         recyclerView =findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager( new LinearLayoutManager(this));
+        adapter=new HardRecyclerViewAdapter(getApplicationContext());
+        recyclerView.setAdapter(adapter);
+
+        spinnerRating=findViewById(R.id.spinner_for_rating);
+        ratingAdapter= new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item,getResources().getStringArray(R.array.spinner_array_for_rating));
+        spinnerRating.setAdapter(ratingAdapter);
+
+
+        spinnerLanguage=findViewById(R.id.spinner_for_language);
+        languageAdapter= new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item,getResources().getStringArray(R.array.spinner_array_for_language));
+        spinnerLanguage.setAdapter(languageAdapter);
+
+        editTextQuery=findViewById(R.id.edit_text_query);
+        editTextLimit=findViewById(R.id.edit_text_limit);
+        editTextOffset=findViewById(R.id.edit_text_offset);
+
+
     }
-
-
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.button_start:
-                new JsonAsyncTask().execute(InternetSetting.createURL());
+                String  query=editTextQuery.getText().toString();
+                String  limit=editTextLimit.getText().toString();
+                String  offset=editTextOffset.getText().toString();
+                String rating =spinnerRating.getSelectedItem().toString();
+                String language =spinnerLanguage.getSelectedItem().toString();
+                Log.d(LOG_TAG,InternetSetting.createURL(query,limit,offset,rating,language).toString());
+                new JsonAsyncTask().execute(InternetSetting.createURL(query,limit,offset,rating,language));
                 break;
         }
     }
 
- private class JsonAsyncTask extends AsyncTask<URL,Void, ArrayList<Information>>{
+
+    private class JsonAsyncTask extends AsyncTask<URL,Void, ArrayList<Information>>{
 
      @Override
      protected ArrayList<Information> doInBackground(URL... urls) {
@@ -55,8 +100,8 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
 
      @Override
      protected void onPostExecute(ArrayList<Information> information ) {
-         adapter=new HardRecyclerViewAdapter(information,getApplicationContext());
-         recyclerView.setAdapter(adapter);
+         adapter.setInformationArrayList(information);
+
 
      }
  }
