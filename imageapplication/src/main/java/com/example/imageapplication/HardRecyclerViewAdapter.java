@@ -21,11 +21,13 @@ public  class HardRecyclerViewAdapter extends RecyclerView.Adapter<HardRecyclerV
     public HardRecyclerViewAdapter(ArrayList<Information> informationArrayList,Context context) {
         this.informationArrayList = informationArrayList;
         this.context=context;
+        notifyDataSetChanged();
     }
 
     public HardRecyclerViewAdapter(Context context) {
         informationArrayList= new ArrayList<>();
         this.context = context;
+        notifyDataSetChanged();
     }
 
     public void setInformationArrayList(ArrayList<Information> informationArrayList) {
@@ -50,7 +52,6 @@ public  class HardRecyclerViewAdapter extends RecyclerView.Adapter<HardRecyclerV
         holder.username.setText(information.getUsername());
         holder.import_datetime.setText(information.getImport_datetime());
         Picasso.with(context).load(information.getUrl()).resize(100,100).into(holder.imageView);
-        Log.d(FirstActivity.LOG_TAG,"адаптер"+information.getTitle());
 
     }
 

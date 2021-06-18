@@ -28,24 +28,32 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
     private EditText editTextOffset;
 
     private Spinner spinnerRating;
-    private String rating;
     private ArrayAdapter<String> ratingAdapter;
 
     private Spinner spinnerLanguage;
-    private String language;
     private ArrayAdapter<String> languageAdapter;
+
+    private static final String KEY_FOR_PARCELABLE_ARRAY ="bundle";
+    private ArrayList<Information> values;
 
 
 
     @Override
     protected void onSaveInstanceState( Bundle outState) {
         super.onSaveInstanceState(outState);
+        Log.d(LOG_TAG,"onSaveInstanceState");
+        outState.putParcelableArrayList(KEY_FOR_PARCELABLE_ARRAY,values);
     }
 
     @Override
     protected void onRestoreInstanceState( Bundle savedInstanceState) {
-
         super.onRestoreInstanceState(savedInstanceState);
+        Log.d(LOG_TAG,"onRestoreInstanceState");
+        values   = savedInstanceState.getParcelableArrayList(KEY_FOR_PARCELABLE_ARRAY);
+        if(values!=null) {
+            adapter.setInformationArrayList(values);
+        }
+
     }
 
     @Override
@@ -56,8 +64,13 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
         buttonStart.setOnClickListener(this);
 
         recyclerView =findViewById(R.id.recycler_view);
+        //recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager( new LinearLayoutManager(this));
-        adapter=new HardRecyclerViewAdapter(getApplicationContext());
+
+        if(adapter==null) {
+            Log.d(LOG_TAG,"Адаптер пуст");
+            adapter = new HardRecyclerViewAdapter(getApplicationContext());
+        }
         recyclerView.setAdapter(adapter);
 
         spinnerRating=findViewById(R.id.spinner_for_rating);
@@ -72,6 +85,7 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
         editTextQuery=findViewById(R.id.edit_text_query);
         editTextLimit=findViewById(R.id.edit_text_limit);
         editTextOffset=findViewById(R.id.edit_text_offset);
+        Log.d(LOG_TAG,"onCrete");
 
 
     }
@@ -100,10 +114,11 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
 
      @Override
      protected void onPostExecute(ArrayList<Information> information ) {
+         values=information;
          adapter.setInformationArrayList(information);
 
-
      }
+
  }
 
 

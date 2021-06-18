@@ -85,17 +85,15 @@ public class InternetSetting {
             Information information;
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObjectForArray = jsonArray.getJSONObject(i);
-                information= new Information();
                 String s=jsonObjectForArray.getString("title");
-                String s1= s.split(" GIF")[0];
-                information.setTitle(s1);
-                information.setType(jsonObjectForArray.getString("type"));
-                information.setUsername(jsonObjectForArray.getString("username"));
-                information.setImport_datetime(jsonObjectForArray.getString("import_datetime"));
+                String title= s.split(" GIF")[0];
+                String type= jsonObjectForArray.getString("type");
+                String username=jsonObjectForArray.getString("username");
+                String import_datetime=jsonObjectForArray.getString("import_datetime");
                 JSONObject jsonObjectImages =jsonObjectForArray.getJSONObject("images");
                 JSONObject jsonObjectFixed_Width_Small_Still=jsonObjectImages.getJSONObject("fixed_width_small_still");
                 String url=jsonObjectFixed_Width_Small_Still.getString("url");
-                information.setUrl(url);
+                information= new Information(url,type,username,title,import_datetime);
                 informationArrayList.add(information);
             }
         } catch (JSONException e) {
