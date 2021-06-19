@@ -10,14 +10,21 @@ public class Information implements Parcelable {
     private String username;
     private String title;
     private String import_datetime;
+    private String preview_gif;
 
-    public Information(String url, String type, String username, String title, String import_datetime) {
+    public String getPreview_gif() {
+        return preview_gif;
+    }
+
+    public Information(String url, String type, String username, String title, String import_datetime, String preview_gif) {
         this.url = url;
         this.type = type;
         this.username = username;
         this.title = title;
         this.import_datetime = import_datetime;
+        this.preview_gif = preview_gif;
     }
+
 
     private Information(Parcel in) {
         url = in.readString();

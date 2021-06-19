@@ -3,6 +3,7 @@ package com.example.imageapplication;
 import android.net.Uri;
 import android.util.JsonReader;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -61,6 +62,7 @@ public class InternetSetting {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream),45000);
             StringBuilder stringBuilder = new StringBuilder(45000);
 
+
             String line= new String();
 
             while ((line=bufferedReader.readLine())!=null){
@@ -68,6 +70,7 @@ public class InternetSetting {
             }
             return stringBuilder.toString();
         } catch (IOException e) {
+
             Log.e(FirstActivity.LOG_TAG,"Не удалось открыть httpURLConnection или проблема с BufferedReader");
         }
         finally {
@@ -91,9 +94,15 @@ public class InternetSetting {
                 String username=jsonObjectForArray.getString("username");
                 String import_datetime=jsonObjectForArray.getString("import_datetime");
                 JSONObject jsonObjectImages =jsonObjectForArray.getJSONObject("images");
+
                 JSONObject jsonObjectFixed_Width_Small_Still=jsonObjectImages.getJSONObject("fixed_width_small_still");
                 String url=jsonObjectFixed_Width_Small_Still.getString("url");
-                information= new Information(url,type,username,title,import_datetime);
+
+                JSONObject jsonObject_preview_gif=jsonObjectImages.getJSONObject("preview_gif");
+                String url_for_gif=jsonObject_preview_gif.getString("url");
+
+
+                information= new Information(url,type,username,title,import_datetime,url_for_gif);
                 informationArrayList.add(information);
             }
         } catch (JSONException e) {

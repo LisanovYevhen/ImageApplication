@@ -3,16 +3,23 @@ package com.example.imageapplication;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.webkit.WebView;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SimpleAdapter;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -38,6 +45,7 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
 
 
 
+
     @Override
     protected void onSaveInstanceState( Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -57,6 +65,21 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        Log.d(LOG_TAG,"onResume() идет после  onRestoreInstanceState");
+        // Как вариант использовать другой конструктор adapter= new HardRecyclerViewAdapter(values, getApplicationContext())
+        if (hasConnection(getApplicationContext())) {
+            buttonStart.setEnabled(true);
+        } else {
+            buttonStart.setEnabled(false);
+            Toast.makeText(this, "Включи интернет нет Jsona", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
@@ -64,14 +87,10 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
         buttonStart.setOnClickListener(this);
 
         recyclerView =findViewById(R.id.recycler_view);
-        //recyclerView.setNestedScrollingEnabled(false);
         recyclerView.setLayoutManager( new LinearLayoutManager(this));
-
-        if(adapter==null) {
-            Log.d(LOG_TAG,"Адаптер пуст");
-            adapter = new HardRecyclerViewAdapter(getApplicationContext());
-        }
+        adapter = new HardRecyclerViewAdapter(getApplicationContext());
         recyclerView.setAdapter(adapter);
+        recyclerView.setOnClickListener(this);
 
         spinnerRating=findViewById(R.id.spinner_for_rating);
         ratingAdapter= new ArrayAdapter<>(getApplicationContext(), android.R.layout.simple_spinner_item,getResources().getStringArray(R.array.spinner_array_for_rating));
@@ -86,9 +105,37 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
         editTextLimit=findViewById(R.id.edit_text_limit);
         editTextOffset=findViewById(R.id.edit_text_offset);
         Log.d(LOG_TAG,"onCrete");
-
+         if (!hasConnection(getApplicationContext())){
+             buttonStart.setEnabled(false);
+             Toast.makeText(this, "Включи интернет нет Jsona", Toast.LENGTH_SHORT).show();
+         }
 
     }
+
+
+
+    private static boolean hasConnection(final Context context)
+    {
+        ConnectivityManager cm = (ConnectivityManager)context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        wifiInfo = cm.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        wifiInfo = cm.getActiveNetworkInfo();
+        if (wifiInfo != null && wifiInfo.isConnected())
+        {
+            return true;
+        }
+        return false;
+    }
+
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -100,6 +147,7 @@ public class FirstActivity extends AppCompatActivity implements View.OnClickList
                 String language =spinnerLanguage.getSelectedItem().toString();
                 Log.d(LOG_TAG,InternetSetting.createURL(query,limit,offset,rating,language).toString());
                 new JsonAsyncTask().execute(InternetSetting.createURL(query,limit,offset,rating,language));
+
                 break;
         }
     }
